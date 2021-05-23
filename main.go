@@ -3,6 +3,7 @@ package main
 import (
 	"bwastartup/auth"
 	"bwastartup/handler"
+	"bwastartup/middleware"
 	"bwastartup/user"
 	"log"
 
@@ -33,7 +34,7 @@ func main() {
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/login", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailHasBeenRegister)
-	api.POST("/avatars", userHandler.UploadAvatar)
+	api.POST("/avatars", middleware.AuthMiddleware(authService, userService) ,userHandler.UploadAvatar)
 
 	router.Run()
 
