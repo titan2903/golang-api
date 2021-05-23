@@ -10,6 +10,7 @@ import (
 type Service interface { //! bisnis logic
 	RegisterUser(input RegisterUserInput) (User, error)
 	Login(input LoginInput) (User, error)
+	IsEmailAvailable(input CheckEmailInput) (bool, error)
 }
 
 type service struct { //! memanggil repository
@@ -57,7 +58,7 @@ func(s *service) Login(input LoginInput) (User, error) {
 	}
 
 	if user.ID == 0 {
-		return user, errors.New("User not found!")
+		return user, errors.New("User not found")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
@@ -67,4 +68,16 @@ func(s *service) Login(input LoginInput) (User, error) {
 	}
 
 	return user, nil
+}
+
+func(s *service) IsEmailAvailable(input CheckEmailInput) (bool, error) {
+	email := input.Email
+
+	user, _ := s.repository.FindByEmail(email)
+
+	if user.ID == 0 { //! email tidak di temukan atau bisa di daftarkan
+		return true, nil
+	}
+
+	return false, nil //! email sudah di gunakan
 }
