@@ -18,9 +18,11 @@ func NewUserHandler(userService user.Service) *userHandler {
 }
 
 func(h *userHandler) RegisterUser(c *gin.Context) {
-	// tangkap input dari user
-	// map input dari user ke struct RegisterUserInput
-	// struct di atas passing sebagai parameter service
+	/*
+		tangkap input dari user
+	 	map input dari user ke struct RegisterUserInput
+	 	struct di atas passing sebagai parameter service
+	*/
 
 	var input user.RegisterUserInput
 	
@@ -128,5 +130,46 @@ func(h *userHandler) CheckEmailHasBeenRegister(c *gin.Context) {
 	}
 
 	response := helper.ApiResponse(metaMessage, http.StatusOK, "success", data)
+	c.JSON(http.StatusOK, response)
+}
+
+func(h *userHandler) UploadAvatar(c *gin.Context) {
+	/*
+		inputan berupa http form jadi tidak perlu membuat struct
+		input dari user
+		simpan gambar di folder "images/"
+		di service panggil repository
+		JWT (sementara hardcode, seakan2 user yang login ID = 1)
+		repository ambil data user yang ID = 1
+		repository update data user simpan lokasi file
+	*/
+
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.ApiResponse("failed to upload avatar image", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response)
+	}
+
+	path := "images/" + file.Filename //! lokasi file di simpan
+
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.ApiResponse("failed to upload avatar image", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response)
+	}
+
+	//! harusnya dapat dari JWT, tapi belum!!
+	userID := 1
+	_, err = h.userService.SaveAvatar(userID, path)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.ApiResponse("failed to upload avatar image", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response)
+	}
+
+	data := gin.H{"is_uploaded": true}
+	response := helper.ApiResponse("Avatar successfully uploaded", http.StatusOK, "success", data)
 	c.JSON(http.StatusOK, response)
 }
