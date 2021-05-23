@@ -23,13 +23,6 @@ func main() {
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
-	
-	// userInput := user.RegisterUserInput{}
-	// userInput.Name = "Tes simpan dari service"
-	// userInput.Email = "test@gmail.com"
-	// userInput.Occupation = "anak band"
-	// userInput.Password = "user1234"
-	// userService.RegisterUser(userInput)
 
 	userHandler := handler.NewUserHandler(userService, authService)
 	
@@ -43,6 +36,13 @@ func main() {
 	api.POST("/avatars", userHandler.UploadAvatar)
 
 	router.Run()
+
+	// userInput := user.RegisterUserInput{}
+	// userInput.Name = "Tes simpan dari service"
+	// userInput.Email = "test@gmail.com"
+	// userInput.Occupation = "anak band"
+	// userInput.Password = "user1234"
+	// userService.RegisterUser(userInput)
 
 	// var users []user.User
 	// db.Find(&users) //! type harus pointer
