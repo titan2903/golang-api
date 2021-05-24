@@ -21,11 +21,13 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
+	//! Users
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
-
 	userHandler := handler.NewUserHandler(userService, authService)
+
+	//!Campaigns
 	
 	router := gin.Default()
 	api := router.Group("/api/v1")
@@ -35,6 +37,8 @@ func main() {
 	api.POST("/login", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailHasBeenRegister)
 	api.POST("/avatars", middleware.AuthMiddleware(authService, userService) ,userHandler.UploadAvatar)
+
+	//!Router Campaigns
 
 	router.Run()
 
@@ -59,19 +63,4 @@ func main() {
 	// router.Run() //! menjalankan router
 }
 
-// func handler(c *gin.Context) {
-// 	dsn := "root:user1234@tcp(127.0.0.1:3306)/bwastartup?charset=utf8mb4&parseTime=True&loc=Local"
-// 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-
-// 	if err != nil {
-// 		log.Fatal(err.Error())
-// 	}
-
-// 	var users []user.User
-
-// 	db.Find(&users)
-
-// 	c.JSON(http.StatusOK, users)
-
-	//! input (memasukkan data atau mengirim request dari client) -> Handler (mapping input ke struct) -> memanggil Service (melakukan bisnis proses, mapping struct) -> repository(akses ke database, berupa CRUD) -> memanggil DB
-// }
+//! input (memasukkan data atau mengirim request dari client) -> Handler (mapping input ke struct) -> memanggil Service (melakukan bisnis proses, mapping struct) -> repository(akses ke database, berupa CRUD) -> memanggil DB
