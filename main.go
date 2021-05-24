@@ -55,7 +55,6 @@ func main() {
 	// for _, user := range users {
 	// 	fmt.Println(user.Name)
 	// 	fmt.Println(user.Email)
-	// 	fmt.Println("=================")
 	// }
 
 	// router := gin.Default() //! daftarkan router default dari Gin
