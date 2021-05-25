@@ -101,6 +101,48 @@ func(h *campaignHandler) CreateCampaign(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+func(h *campaignHandler) UpdateCampaign(c *gin.Context) {
+	/*
+		User memasukkan input
+		handler menangkap inputan dari user
+		mapping dari input ke input struct (adri user dan uri)
+		passing ke service
+		Service memanggil atau menggunakan function yang ada di repository
+		repository update data campaign
+	*/
+
+	var inputID campaign.GetCampaignDetailInput
+	err := c.ShouldBindUri(&inputID)
+	if err != nil {
+		response := helper.ApiResponse("Failed to update campaign", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return;
+	}
+
+	var inputData campaign.CreateCampaignInput
+	err = c.ShouldBindJSON(&inputData)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := helper.ApiResponse("Failed Update Campaign", http.StatusBadRequest, "error", errors)
+		c.JSON(http.StatusBadRequest, response)
+		return;
+	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+	inputData.User = currentUser
+
+	updatedCampaign, err := h.service.UpdateCampaign(inputID, inputData)
+	if err != nil {
+		response := helper.ApiResponse("Failed Update Campaign", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return;
+	}
+
+	response := helper.ApiResponse("Success Update Campaign", http.StatusOK, "success", campaign.FormatCampaign(updatedCampaign))
+
+	c.JSON(http.StatusOK, response)
+}
+
 /*
 	! setiap membuat sebuah handler perlu di daftarkan routingnya
 */
