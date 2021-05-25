@@ -50,8 +50,9 @@ func main() {
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
 	api.POST("/campaigns", middleware.AuthMiddleware(authService, userService), campaignHandler.CreateCampaign)
 	api.PUT("/campaigns/:id", middleware.AuthMiddleware(authService, userService), campaignHandler.UpdateCampaign)
+	api.POST("campaign-image", middleware.AuthMiddleware(authService, userService), campaignHandler.UploadCampaignImage)
 
-	router.Run()
+	router.Run() //! default PORT 8080
 
 	// userInput := user.RegisterUserInput{}
 	// userInput.Name = "Tes simpan dari service"
