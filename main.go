@@ -10,6 +10,7 @@ import (
 	"bwastartup/user"
 	"log"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -70,6 +71,7 @@ func main() {
 	api.POST("/transactions", middleware.AuthMiddleware(authService,userService), transactionHandler.CreateTransaction)
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
+	router.Use(cors.Default()) // ! Allow cors
 	router.Run() //! default PORT 8080
 
 	// userInput := user.RegisterUserInput{}
