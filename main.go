@@ -68,6 +68,7 @@ func main() {
 	api.GET("/campaigns/:id/transactions", middleware.AuthMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
 	api.GET("/transactions", middleware.AuthMiddleware(authService, userService), transactionHandler.GetUserTransactions)
 	api.POST("/transactions", middleware.AuthMiddleware(authService,userService), transactionHandler.CreateTransaction)
+	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
 	router.Run() //! default PORT 8080
 

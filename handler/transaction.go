@@ -110,3 +110,24 @@ func(h *transactionHandler) CreateTransaction(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+
+func(h *transactionHandler) GetNotification(c *gin.Context) { //! yang mengakses endpoint ini bukan client, tetapi yang mengaksesnya yaitu midtrans
+	var input transaction.TransactionNotificationInput
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		response := helper.ApiResponse("Failed to process notification", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return;
+	}
+
+	err = h.service.PaymentProcess(input)
+	if err != nil {
+		response := helper.ApiResponse("Failed to process notification", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return;
+	}
+
+	c.JSON(http.StatusOK, input)
+}
