@@ -1,8 +1,12 @@
 package campaign
 
-import "time"
+import (
+	"bwastartup/user"
+	"time"
+)
 
-type Campaingn struct {
+
+type Campaign struct {
 	ID               int
 	UserID           int
 	Name             string
@@ -15,10 +19,11 @@ type Campaingn struct {
 	Slug             string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
-	CampaignImages	[]campaignImage
+	CampaignImages	[]CampaignImage
+	User 			user.User
 }
 
-type campaignImage struct {
+type CampaignImage struct {
 	ID 				int
 	CampaignID 		int
 	FileName 		string
