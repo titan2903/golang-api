@@ -77,3 +77,36 @@ func(h *transactionHandler) GetUserTransactions(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+func(h *transactionHandler) CreateTransaction(c *gin.Context) {
+	/*
+		ada input dari user memasukkan jumlah uang yang di input
+		handler menangkap input dan kemudian di mapping ke input struct nya
+		di dalam handled memanggil service buat transaksi, akan di record datanya ke database, manggil sistem midtrans untuk mendaftarkan transaksinya. balikannya berupo token.
+		service memanggil repository create new transaction data
+	*/
+
+	var input transaction.CreateTransactionInput
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		errorMessage := gin.H{"errors": errors}
+		response := helper.ApiResponse("Failed Create transaction", http.StatusBadRequest, "error", errorMessage)
+		c.JSON(http.StatusBadRequest, response)
+		return;
+	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+	input.User = currentUser
+
+	newTransaction, err := h.service.CreateTransaction(input)
+	if err != nil {
+		response := helper.ApiResponse("Failed Create transaction", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return;
+	}
+
+	response := helper.ApiResponse("Success Create transaction", http.StatusOK, "success", transaction.FormatTransaction(newTransaction))
+
+	c.JSON(http.StatusOK, response)
+}

@@ -5,6 +5,7 @@ import (
 	"bwastartup/campaign"
 	"bwastartup/handler"
 	"bwastartup/middleware"
+	"bwastartup/payment"
 	"bwastartup/transaction"
 	"bwastartup/user"
 	"log"
@@ -23,10 +24,12 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
+	//! Auth
+	authService := auth.NewService()
+
 	//! Users
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
-	authService := auth.NewService()
 	userHandler := handler.NewUserHandler(userService, authService)
 
 	//!Campaigns
@@ -34,9 +37,12 @@ func main() {
 	campaignService := campaign.NewService(campaignRepository)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
 
+	//! Payment
+	paymentService := payment.NewService()
+
 	// ! Transaction
 	transactionRepository := transaction.NewRepository(db)
-	transactionService := transaction.NewService(transactionRepository, campaignRepository)
+	transactionService := transaction.NewService(transactionRepository, campaignRepository, paymentService)
 	transactionHandler := handler.NewTransactionHandler(transactionService)
 	
 	router := gin.Default()
@@ -61,6 +67,7 @@ func main() {
 	//!Router Handler
 	api.GET("/campaigns/:id/transactions", middleware.AuthMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
 	api.GET("/transactions", middleware.AuthMiddleware(authService, userService), transactionHandler.GetUserTransactions)
+	api.POST("/transactions", middleware.AuthMiddleware(authService,userService), transactionHandler.CreateTransaction)
 
 	router.Run() //! default PORT 8080
 
