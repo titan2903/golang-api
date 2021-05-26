@@ -23,7 +23,7 @@ func NewRepository(db *gorm.DB) *repository { //! membuat object baru dari repos
 func(r *repository) FindAll() ([]Campaign, error) {
 	var campaigns []Campaign
 
-	err := r.db.Preload("CampaignImages", "campaign_images.is_primary = 1").Find(&campaigns).Error
+	err := r.db.Preload("CampaignImages", "campaign_images.is_primary = 1").Find(&campaigns).Error //! type harus pointer
 	if err != nil {
 		return campaigns, err
 	}

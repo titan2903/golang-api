@@ -4,11 +4,14 @@ import (
 	"bwastartup/auth"
 	"bwastartup/campaign"
 	"bwastartup/handler"
+	"bwastartup/libraryloadtemplate"
 	"bwastartup/middleware"
 	"bwastartup/payment"
 	"bwastartup/transaction"
 	"bwastartup/user"
 	"log"
+
+	webHandler "bwastartup/web/handler"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -45,12 +48,23 @@ func main() {
 	transactionRepository := transaction.NewRepository(db)
 	transactionService := transaction.NewService(transactionRepository, campaignRepository, paymentService)
 	transactionHandler := handler.NewTransactionHandler(transactionService)
+
+	//! Web Static
+	userWebHandler := webHandler.NewUserHandler(userService)
 	
 	router := gin.Default()
+	router.Use(cors.Default()) // ! Allow cors
+
+	//! HTML Render
+	router.HTMLRender = libraryloadtemplate.LoadTemplates("./web/templates") //! mengeload tamplate yang ada di dalam folder template
+	
 	api := router.Group("/api/v1")
 
-	//! Router access immage
+	//! Router access immage and web assets
 	router.Static("/images", "./images")
+	router.Static("/css", "./web/assets/css")
+	router.Static("/js", "./web/assets/js")
+	router.Static("/webfonts", "./web/assets/webfonts")
 
 	//! Router Users
 	api.POST("/users", userHandler.RegisterUser)
@@ -72,27 +86,12 @@ func main() {
 	api.POST("/transactions", middleware.AuthMiddleware(authService,userService), transactionHandler.CreateTransaction)
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
-	router.Use(cors.Default()) // ! Allow cors
+	//!Router Web Static
+	router.GET("/users", userWebHandler.Index)
+	router.GET("/users/new", userWebHandler.FormCreateUser)
+	router.POST("/users", userWebHandler.CreateUser)
+
 	router.Run() //! default PORT 8080
-
-	// userInput := user.RegisterUserInput{}
-	// userInput.Name = "Tes simpan dari service"
-	// userInput.Email = "test@gmail.com"
-	// userInput.Occupation = "anak band"
-	// userInput.Password = "user1234"
-	// userService.RegisterUser(userInput)
-
-	// var users []user.User
-	// db.Find(&users) //! type harus pointer
-
-	// for _, user := range users {
-	// 	fmt.Println(user.Name)
-	// 	fmt.Println(user.Email)
-	// }
-
-	// router := gin.Default() //! daftarkan router default dari Gin
-	// router.GET("/handler", handler) //! memanggil handler functionnya
-	// router.Run() //! menjalankan router
 }
 
 //! input (memasukkan data atau mengirim request dari client) -> Handler (mapping input ke struct) -> memanggil Service (melakukan bisnis proses, mapping struct) -> repository(akses ke database, berupa CRUD) -> memanggil DB
