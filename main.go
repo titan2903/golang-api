@@ -90,6 +90,8 @@ func main() {
 	router.GET("/users", userWebHandler.Index)
 	router.GET("/users/new", userWebHandler.FormCreateUser)
 	router.POST("/users", userWebHandler.CreateUser)
+	router.GET("/users/edit/:id", userWebHandler.FormUpdateUser)
+	router.POST("/users/update/:id", userWebHandler.UpdateUser)
 
 	router.Run() //! default PORT 8080
 }
