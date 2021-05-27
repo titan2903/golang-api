@@ -14,6 +14,7 @@ import (
 	webHandler "bwastartup/web/handler"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -54,12 +55,14 @@ func main() {
 	userWebHandler := webHandler.NewUserHandler(userService)
 	campaignWebHandller := webHandler.NewCampaignHandler(campaignService, userService)
 	transactionWebHandler := webHandler.NewTransactionHandler(transactionService)
+	sessionWebHandler := webHandler.NewSessionHandler(userService)
 	
 	router := gin.Default()
 	router.Use(cors.Default()) // ! Allow cors
 
 	//!Session
 	cookieStore := cookie.NewStore([]byte(auth.SECRET_KEY))
+	router.Use(sessions.Sessions("testbanana", cookieStore))
 
 	//! HTML Render
 	router.HTMLRender = libraryloadtemplate.LoadTemplates("./web/templates") //! mengeload tamplate yang ada di dalam folder template
@@ -92,27 +95,32 @@ func main() {
 	api.POST("/transactions", middleware.AuthMiddleware(authService,userService), transactionHandler.CreateTransaction)
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
+	//!Router Web Static Login
+	router.GET("/login", sessionWebHandler.FormLogin)
+	router.POST("/session", sessionWebHandler.Login)
+	router.GET("/logout", sessionWebHandler.Destroy)
+
 	//!Router Web Static Users
-	router.GET("/users", userWebHandler.Index)
-	router.GET("/users/new", userWebHandler.FormCreateUser)
-	router.POST("/users", userWebHandler.CreateUser)
-	router.GET("/users/edit/:id", userWebHandler.FormUpdateUser)
-	router.POST("/users/update/:id", userWebHandler.UpdateUser)
-	router.GET("users/avatar/:id",userWebHandler.FormUplaodAvater)
-	router.POST("users/avatar/:id", userWebHandler.UploadAvatar)
+	router.GET("/users", middleware.AuthAdminMiddleware(), userWebHandler.Index)
+	router.GET("/users/new", middleware.AuthAdminMiddleware(), userWebHandler.FormCreateUser)
+	router.POST("/users", middleware.AuthAdminMiddleware(), userWebHandler.CreateUser)
+	router.GET("/users/edit/:id", middleware.AuthAdminMiddleware(), userWebHandler.FormUpdateUser)
+	router.POST("/users/update/:id", middleware.AuthAdminMiddleware(), userWebHandler.UpdateUser)
+	router.GET("users/avatar/:id", middleware.AuthAdminMiddleware(), userWebHandler.FormUplaodAvater)
+	router.POST("users/avatar/:id", middleware.AuthAdminMiddleware(), userWebHandler.UploadAvatar)
 
 	//!Router Web Static Campaigns
-	router.GET("/campaigns", campaignWebHandller.Index)
-	router.GET("/campaigns/new", campaignWebHandller.FormSelectCreateUser)
-	router.POST("/campaigns", campaignWebHandller.CreateCampaignUser)
-	router.GET("/campaigns/image/:id", campaignWebHandller.FormUploadCampaignImage)
-	router.POST("/campaigns/image/:id", campaignWebHandller.UploadCampaignImage)
-	router.GET("/campaigns/edit/:id", campaignWebHandller.FormUpdateCampaign)
-	router.POST("/campaigns/update/:id", campaignWebHandller.UpdateCampaign)
-	router.GET("/campaigns/show/:id", campaignWebHandller.ShowDetailCampaign)
+	router.GET("/campaigns", middleware.AuthAdminMiddleware(), campaignWebHandller.Index)
+	router.GET("/campaigns/new", middleware.AuthAdminMiddleware(), campaignWebHandller.FormSelectCreateUser)
+	router.POST("/campaigns", middleware.AuthAdminMiddleware(), campaignWebHandller.CreateCampaignUser)
+	router.GET("/campaigns/image/:id", middleware.AuthAdminMiddleware(), campaignWebHandller.FormUploadCampaignImage)
+	router.POST("/campaigns/image/:id", middleware.AuthAdminMiddleware(), campaignWebHandller.UploadCampaignImage)
+	router.GET("/campaigns/edit/:id", middleware.AuthAdminMiddleware(), campaignWebHandller.FormUpdateCampaign)
+	router.POST("/campaigns/update/:id", middleware.AuthAdminMiddleware(), campaignWebHandller.UpdateCampaign)
+	router.GET("/campaigns/show/:id", middleware.AuthAdminMiddleware(), campaignWebHandller.ShowDetailCampaign)
 
 	//!Router Web Static Transactions
-	router.GET("/transactions", transactionWebHandler.Index)
+	router.GET("/transactions", middleware.AuthAdminMiddleware(), transactionWebHandler.Index)
 
 	router.Run() //! default PORT 8080
 }
