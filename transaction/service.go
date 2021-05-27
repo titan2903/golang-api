@@ -19,6 +19,7 @@ type Service interface {
 	GetTransactionByUserID(userID int) ([]Transaction, error)
 	CreateTransaction(input CreateTransactionInput) (Transaction, error)
 	PaymentProcess(input TransactionNotificationInput) error
+	GetAllTransaction() ([]Transaction, error)
 }
 
 func NewService(repository Repository, campaignRepository campaign.Repository, paymentService payment.Service) *service {
@@ -128,4 +129,13 @@ func(s *service) PaymentProcess(input TransactionNotificationInput) (error) {
 	}
 
 	return nil
+}
+
+func(s *service) GetAllTransaction() ([]Transaction, error) {
+	transactions, err := s.repository.FindAll()
+	if err != nil {
+		return transactions, err
+	}
+
+	return transactions, nil
 }
