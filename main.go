@@ -14,6 +14,7 @@ import (
 	webHandler "bwastartup/web/handler"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -51,9 +52,14 @@ func main() {
 
 	//! Web Static
 	userWebHandler := webHandler.NewUserHandler(userService)
+	campaignWebHandller := webHandler.NewCampaignHandler(campaignService, userService)
+	transactionWebHandler := webHandler.NewTransactionHandler(transactionService)
 	
 	router := gin.Default()
 	router.Use(cors.Default()) // ! Allow cors
+
+	//!Session
+	cookieStore := cookie.NewStore([]byte(auth.SECRET_KEY))
 
 	//! HTML Render
 	router.HTMLRender = libraryloadtemplate.LoadTemplates("./web/templates") //! mengeload tamplate yang ada di dalam folder template
@@ -80,18 +86,33 @@ func main() {
 	api.PUT("/campaigns/:id", middleware.AuthMiddleware(authService, userService), campaignHandler.UpdateCampaign)
 	api.POST("campaign-image", middleware.AuthMiddleware(authService, userService), campaignHandler.UploadCampaignImage)
 
-	//!Router Handler
+	//!Router Transactions
 	api.GET("/campaigns/:id/transactions", middleware.AuthMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
 	api.GET("/transactions", middleware.AuthMiddleware(authService, userService), transactionHandler.GetUserTransactions)
 	api.POST("/transactions", middleware.AuthMiddleware(authService,userService), transactionHandler.CreateTransaction)
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
-	//!Router Web Static
+	//!Router Web Static Users
 	router.GET("/users", userWebHandler.Index)
 	router.GET("/users/new", userWebHandler.FormCreateUser)
 	router.POST("/users", userWebHandler.CreateUser)
 	router.GET("/users/edit/:id", userWebHandler.FormUpdateUser)
 	router.POST("/users/update/:id", userWebHandler.UpdateUser)
+	router.GET("users/avatar/:id",userWebHandler.FormUplaodAvater)
+	router.POST("users/avatar/:id", userWebHandler.UploadAvatar)
+
+	//!Router Web Static Campaigns
+	router.GET("/campaigns", campaignWebHandller.Index)
+	router.GET("/campaigns/new", campaignWebHandller.FormSelectCreateUser)
+	router.POST("/campaigns", campaignWebHandller.CreateCampaignUser)
+	router.GET("/campaigns/image/:id", campaignWebHandller.FormUploadCampaignImage)
+	router.POST("/campaigns/image/:id", campaignWebHandller.UploadCampaignImage)
+	router.GET("/campaigns/edit/:id", campaignWebHandller.FormUpdateCampaign)
+	router.POST("/campaigns/update/:id", campaignWebHandller.UpdateCampaign)
+	router.GET("/campaigns/show/:id", campaignWebHandller.ShowDetailCampaign)
+
+	//!Router Web Static Transactions
+	router.GET("/transactions", transactionWebHandler.Index)
 
 	router.Run() //! default PORT 8080
 }

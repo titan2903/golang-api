@@ -4,6 +4,8 @@ import (
 	"bwastartup/campaign"
 	"bwastartup/user"
 	"time"
+
+	"github.com/leekchan/accounting"
 )
 
 
@@ -19,4 +21,14 @@ type Transaction struct {
 	Campaign	campaign.Campaign
 	CreatedAt  	time.Time
 	UpdatedAt 	time.Time
+}
+
+func(t Transaction) AmountFormatIDR() string {
+	tr := accounting.Accounting{
+		Symbol: "Rp", 
+		Precision: 2, 
+		Thousand: ".",
+		 Decimal: ",",
+	}
+	return tr.FormatMoney(t.Amount)
 }
