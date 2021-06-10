@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"os"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -16,7 +17,7 @@ type jwtService struct {
 
 }
 
-var SECRET_KEY = []byte("BANANA_1234")
+var SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
 
 func NewService() *jwtService { //! bisa memanggil generate token dari package mana pun
 	return &jwtService{}
