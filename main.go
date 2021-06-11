@@ -25,7 +25,7 @@ import (
 
 func main() {
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
-	// dsn := "root:user1234@tcp(127.0.0.1:3306)/bwastartup?charset=utf8mb4&parseTime=True&loc=Local"
+
 	var myEnv map[string]string
 	myEnv, err := godotenv.Read()
 	if err != nil {
