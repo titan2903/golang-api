@@ -14,7 +14,6 @@ import (
 
 	webHandler "bwastartup/web/handler"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -70,7 +69,7 @@ func main() {
 	sessionWebHandler := webHandler.NewSessionHandler(userService)
 	
 	router := gin.Default()
-	router.Use(cors.Default()) // ! Allow cors
+	router.Use(middleware.CORSMiddleware()) // ! Allow cors
 
 	//!Session
 	cookieStore := cookie.NewStore([]byte(auth.SECRET_KEY))
