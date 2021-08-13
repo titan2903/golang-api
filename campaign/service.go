@@ -24,10 +24,10 @@ func NewService(repository Repository) *service {
 	return &service{repository}
 }
 
-func (s *service) GetCampaigns(userID int) ([]Campaign, error) {
+func (s *service) GetCampaigns(UserID int) ([]Campaign, error) {
 	//! melakukan switching percabangan
-	if userID != 0 {
-		campaigns, err := s.repository.FindByUserID(userID)
+	if UserID != 0 {
+		campaigns, err := s.repository.FindByUserID(UserID)
 		if err != nil {
 			return campaigns, err
 		}
