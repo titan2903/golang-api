@@ -21,7 +21,6 @@ require (
 	github.com/veritrans/go-midtrans v0.0.0-20210226064730-b0852df0572b
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gorm.io/driver/mysql v1.1.0
 	gorm.io/driver/postgres v1.3.10
 	gorm.io/gorm v1.23.7
 )
