@@ -5,11 +5,13 @@ import (
 	"bwastartup/campaign"
 	"bwastartup/config"
 	"bwastartup/handler"
+	"bwastartup/helper"
 	"bwastartup/libraryloadtemplate"
 	"bwastartup/middleware"
 	"bwastartup/payment"
 	"bwastartup/transaction"
 	"bwastartup/user"
+	"fmt"
 
 	webHandler "bwastartup/web/handler"
 
@@ -47,6 +49,13 @@ func main() {
 	campaignWebHandller := webHandler.NewCampaignHandler(campaignService, userService)
 	transactionWebHandler := webHandler.NewTransactionHandler(transactionService)
 	sessionWebHandler := webHandler.NewSessionHandler(userService)
+
+	//! Set Port
+	port := helper.GoDotEnvVariable("PORT")
+	if port == "" {
+		port = "8000"
+	}
+	sPort := fmt.Sprintf(":%s", port)
 
 	router := gin.Default()
 	router.Use(middleware.CORSMiddleware()) // ! Allow cors
@@ -113,7 +122,7 @@ func main() {
 	//!Router Web Static Transactions
 	router.GET("/transactions", middleware.AuthAdminMiddleware(), transactionWebHandler.Index)
 
-	router.Run() //! default PORT 8080
+	router.Run(sPort) //! default PORT 8080
 }
 
 //! input (memasukkan data atau mengirim request dari client) -> Handler (mapping input ke struct) -> memanggil Service (melakukan bisnis proses, mapping struct) -> repository(akses ke database, berupa CRUD) -> memanggil DB
