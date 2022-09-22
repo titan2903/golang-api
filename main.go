@@ -3,44 +3,41 @@ package main
 import (
 	"bwastartup/auth"
 	"bwastartup/campaign"
+	"bwastartup/config"
 	"bwastartup/handler"
 	"bwastartup/libraryloadtemplate"
 	"bwastartup/middleware"
 	"bwastartup/payment"
 	"bwastartup/transaction"
 	"bwastartup/user"
-	"fmt"
-	"log"
 
 	webHandler "bwastartup/web/handler"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 func main() {
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 
-	var myEnv map[string]string
-	myEnv, err := godotenv.Read()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// var myEnv map[string]string
+	// myEnv, err := godotenv.Read()
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 
-	dbPassword := myEnv["DB_PASSWORD"]
-	dbHost := myEnv["DB_HOST"]
-	dbName := myEnv["DB_NAME"]
-	dsn := fmt.Sprintf("root:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbPassword, dbHost, dbName)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dbPassword := myEnv["DB_PASSWORD"]
+	// dbHost := myEnv["DB_HOST"]
+	// dbName := myEnv["DB_NAME"]
+	// dsn := fmt.Sprintf("root:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbPassword, dbHost, dbName)
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
 
+	db := config.ConnectDB()
 	//! Auth
 	authService := auth.NewService()
 
@@ -67,7 +64,7 @@ func main() {
 	campaignWebHandller := webHandler.NewCampaignHandler(campaignService, userService)
 	transactionWebHandler := webHandler.NewTransactionHandler(transactionService)
 	sessionWebHandler := webHandler.NewSessionHandler(userService)
-	
+
 	router := gin.Default()
 	router.Use(middleware.CORSMiddleware()) // ! Allow cors
 
@@ -77,7 +74,7 @@ func main() {
 
 	//! HTML Render
 	router.HTMLRender = libraryloadtemplate.LoadTemplates("./web/templates") //! mengeload tamplate yang ada di dalam folder template
-	
+
 	api := router.Group("/api/v1")
 
 	//! Router access immage and web assets
@@ -90,7 +87,7 @@ func main() {
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/login", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailHasBeenRegister)
-	api.POST("/avatars", middleware.AuthMiddleware(authService, userService) ,userHandler.UploadAvatar)
+	api.POST("/avatars", middleware.AuthMiddleware(authService, userService), userHandler.UploadAvatar)
 	api.GET("/users/fetch", middleware.AuthMiddleware(authService, userService), userHandler.FetchUser)
 
 	//!Router Campaigns
@@ -103,7 +100,7 @@ func main() {
 	//!Router Transactions
 	api.GET("/campaigns/:id/transactions", middleware.AuthMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
 	api.GET("/transactions", middleware.AuthMiddleware(authService, userService), transactionHandler.GetUserTransactions)
-	api.POST("/transactions", middleware.AuthMiddleware(authService,userService), transactionHandler.CreateTransaction)
+	api.POST("/transactions", middleware.AuthMiddleware(authService, userService), transactionHandler.CreateTransaction)
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
 	//!Router Web Static Login
