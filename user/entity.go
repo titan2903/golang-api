@@ -1,8 +1,13 @@
 package user
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
+	gorm.Model
 	ID             int
 	Name           string
 	Occupation     string
@@ -11,5 +16,5 @@ type User struct {
 	AvatarFileName string
 	Role           string
 	CreatedAt      time.Time
-	UpdatedAt	   time.Time
+	UpdatedAt      time.Time
 }

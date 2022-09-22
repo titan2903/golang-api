@@ -19,23 +19,6 @@ import (
 )
 
 func main() {
-	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
-
-	// var myEnv map[string]string
-	// myEnv, err := godotenv.Read()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
-
-	// dbPassword := myEnv["DB_PASSWORD"]
-	// dbHost := myEnv["DB_HOST"]
-	// dbName := myEnv["DB_NAME"]
-	// dsn := fmt.Sprintf("root:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbPassword, dbHost, dbName)
-	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
 
 	db := config.ConnectDB()
 	//! Auth

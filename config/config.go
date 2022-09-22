@@ -1,7 +1,10 @@
 package config
 
 import (
+	"bwastartup/campaign"
 	"bwastartup/helper"
+	"bwastartup/transaction"
+	"bwastartup/user"
 	"fmt"
 	"log"
 
@@ -19,6 +22,16 @@ func ConnectDB() *gorm.DB {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+
+	if err = db.AutoMigrate(
+		&user.User{},
+		&campaign.Campaign{},
+		&transaction.Transaction{},
+	); err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("success connect to database")
 
 	return db
 }

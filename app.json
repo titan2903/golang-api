@@ -1,0 +1,12 @@
+{
+    "name": "Start on Heroku: Go",
+    "description": "Go Getting Started Example App",
+    "keywords": [
+      "getting-started",
+      "go",
+      "sample",
+      "example"
+    ],
+    "website": "https://github.com/titan2903/golang-api-crowdfunding",
+    "repository": "https://github.com/titan2903/golang-api-crowdfunding"
+}

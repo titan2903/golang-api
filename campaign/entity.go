@@ -5,10 +5,11 @@ import (
 	"time"
 
 	"github.com/leekchan/accounting"
+	"gorm.io/gorm"
 )
 
-
 type Campaign struct {
+	gorm.Model
 	ID               int
 	UserID           int
 	Name             string
@@ -21,35 +22,35 @@ type Campaign struct {
 	Slug             string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
-	CampaignImages	[]CampaignImage
-	User 			user.User
+	CampaignImages   []CampaignImage
+	User             user.User
 }
 
-func(c Campaign) GoalAmountFormatIDR() string {
+func (c Campaign) GoalAmountFormatIDR() string {
 	ac := accounting.Accounting{
-		Symbol: "Rp", 
-		Precision: 2, 
-		Thousand: ".",
-		 Decimal: ",",
+		Symbol:    "Rp",
+		Precision: 2,
+		Thousand:  ".",
+		Decimal:   ",",
 	}
 	return ac.FormatMoney(c.GoalAmount)
 }
 
-func(c Campaign) CurrentAmountFormatIDR() string {
+func (c Campaign) CurrentAmountFormatIDR() string {
 	ac := accounting.Accounting{
-		Symbol: "Rp", 
-		Precision: 2, 
-		Thousand: ".",
-		 Decimal: ",",
+		Symbol:    "Rp",
+		Precision: 2,
+		Thousand:  ".",
+		Decimal:   ",",
 	}
 	return ac.FormatMoney(c.CurrentAmount)
 }
 
 type CampaignImage struct {
-	ID 				int
-	CampaignID 		int
-	FileName 		string
-	IsPrimary 		int
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID         int
+	CampaignID int
+	FileName   string
+	IsPrimary  int
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
