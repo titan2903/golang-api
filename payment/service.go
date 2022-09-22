@@ -20,11 +20,6 @@ func NewService() *service {
 }
 
 func (s *service) GetPaymentURL(transaction Transaction, user user.User) (string, error) {
-	// var myEnv map[string]string
-	// myEnv, err := godotenv.Read()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
 
 	serverKey := helper.GoDotEnvVariable("SERVER_KEY")
 	clientKey := helper.GoDotEnvVariable("CLIENT_KEY")
