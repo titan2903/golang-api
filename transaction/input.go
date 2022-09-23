@@ -1,6 +1,6 @@
 package transaction
 
-import "bwastartup/user"
+import "golang-api-crowdfunding/user"
 
 type GetCampaignTransactionInput struct {
 	ID   int `uri:"id" binding:"required"`
@@ -8,9 +8,9 @@ type GetCampaignTransactionInput struct {
 }
 
 type CreateTransactionInput struct {
-	Amount 		int `json:"amount" binding:"required"`
-	CampaignID 	int `json:"campaign_id" binding:"required"`
-	User 		user.User //!untuk mengetahui user siapa yang request
+	Amount     int       `json:"amount" binding:"required"`
+	CampaignID int       `json:"campaign_id" binding:"required"`
+	User       user.User //!untuk mengetahui user siapa yang request
 }
 
 type TransactionNotificationInput struct {

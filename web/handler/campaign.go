@@ -1,37 +1,35 @@
 package handler
 
 import (
-	"bwastartup/campaign"
-	"bwastartup/user"
 	"fmt"
+	"golang-api-crowdfunding/campaign"
+	"golang-api-crowdfunding/user"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-
 type campaignHandler struct {
 	campaignService campaign.Service
-	userService user.Service
+	userService     user.Service
 }
 
 func NewCampaignHandler(campaignService campaign.Service, userService user.Service) *campaignHandler {
 	return &campaignHandler{campaignService, userService}
 }
 
-
-func(h *campaignHandler) Index(c *gin.Context) {
+func (h *campaignHandler) Index(c *gin.Context) {
 	campaigns, err := h.campaignService.GetCampaigns(0)
 	if err != nil {
-			c.HTML(http.StatusInternalServerError, "error.html", nil)
-			return
+		c.HTML(http.StatusInternalServerError, "error.html", nil)
+		return
 	}
 
 	c.HTML(http.StatusOK, "campaign_index.html", gin.H{"campaigns": campaigns})
 }
 
-func(h *campaignHandler) FormSelectCreateUser(c *gin.Context) {
+func (h *campaignHandler) FormSelectCreateUser(c *gin.Context) {
 	users, err := h.userService.GetAllUsers()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.html", nil)
@@ -41,11 +39,10 @@ func(h *campaignHandler) FormSelectCreateUser(c *gin.Context) {
 	input := campaign.FormCreateCampaignInput{}
 	input.Users = users
 
-
 	c.HTML(http.StatusOK, "campaign_new.html", input)
 }
 
-func(h *campaignHandler) CreateCampaignUser(c *gin.Context) {
+func (h *campaignHandler) CreateCampaignUser(c *gin.Context) {
 	var input campaign.FormCreateCampaignInput
 
 	err := c.ShouldBind(&input)
@@ -86,14 +83,14 @@ func(h *campaignHandler) CreateCampaignUser(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/campaigns")
 }
 
-func(h *campaignHandler) FormUploadCampaignImage(c *gin.Context) {
+func (h *campaignHandler) FormUploadCampaignImage(c *gin.Context) {
 	idParam := c.Param("id")
 	id, _ := strconv.Atoi(idParam)
 
 	c.HTML(http.StatusOK, "campaign_image.html", gin.H{"ID": id})
 }
 
-func(h *campaignHandler) UploadCampaignImage(c *gin.Context) {
+func (h *campaignHandler) UploadCampaignImage(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.html", nil)
@@ -139,7 +136,7 @@ func(h *campaignHandler) UploadCampaignImage(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/campaigns")
 }
 
-func(h *campaignHandler) FormUpdateCampaign(c *gin.Context) {
+func (h *campaignHandler) FormUpdateCampaign(c *gin.Context) {
 	idParam := c.Param("id")
 	id, _ := strconv.Atoi(idParam)
 
@@ -157,11 +154,10 @@ func(h *campaignHandler) FormUpdateCampaign(c *gin.Context) {
 	input.GoalAmount = existingCampaign.GoalAmount
 	input.Perks = existingCampaign.Perks
 
-
 	c.HTML(http.StatusOK, "campaign_edit.html", input)
 }
 
-func(h *campaignHandler) UpdateCampaign(c *gin.Context) {
+func (h *campaignHandler) UpdateCampaign(c *gin.Context) {
 	idParam := c.Param("id")
 	id, _ := strconv.Atoi(idParam)
 
@@ -206,7 +202,7 @@ func(h *campaignHandler) UpdateCampaign(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/campaigns")
 }
 
-func(h *campaignHandler) ShowDetailCampaign(c *gin.Context) {
+func (h *campaignHandler) ShowDetailCampaign(c *gin.Context) {
 	idParam := c.Param("id")
 	id, _ := strconv.Atoi(idParam)
 

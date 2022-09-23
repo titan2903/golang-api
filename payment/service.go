@@ -1,8 +1,8 @@
 package payment
 
 import (
-	"bwastartup/helper"
-	"bwastartup/user"
+	"golang-api-crowdfunding/helper"
+	"golang-api-crowdfunding/user"
 	"strconv"
 
 	midtrans "github.com/veritrans/go-midtrans"

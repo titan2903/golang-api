@@ -1,19 +1,19 @@
 package main
 
 import (
-	"bwastartup/auth"
-	"bwastartup/campaign"
-	"bwastartup/config"
-	"bwastartup/handler"
-	"bwastartup/helper"
-	"bwastartup/libraryloadtemplate"
-	"bwastartup/middleware"
-	"bwastartup/payment"
-	"bwastartup/transaction"
-	"bwastartup/user"
 	"fmt"
+	"golang-api-crowdfunding/auth"
+	"golang-api-crowdfunding/campaign"
+	"golang-api-crowdfunding/config"
+	"golang-api-crowdfunding/handler"
+	"golang-api-crowdfunding/helper"
+	"golang-api-crowdfunding/libraryloadtemplate"
+	"golang-api-crowdfunding/middleware"
+	"golang-api-crowdfunding/payment"
+	"golang-api-crowdfunding/transaction"
+	"golang-api-crowdfunding/user"
 
-	webHandler "bwastartup/web/handler"
+	webHandler "golang-api-crowdfunding/web/handler"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"

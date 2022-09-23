@@ -1,14 +1,13 @@
 package handler
 
 import (
-	"bwastartup/user"
 	"fmt"
+	"golang-api-crowdfunding/user"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
 
 type userHandler struct {
 	userService user.Service
@@ -18,29 +17,29 @@ func NewUserHandler(userService user.Service) *userHandler {
 	return &userHandler{userService}
 }
 
-func(h *userHandler) Index(c *gin.Context) {
+func (h *userHandler) Index(c *gin.Context) {
 	users, err := h.userService.GetAllUsers()
 	if err != nil {
 		//! DO Handle
 		c.HTML(http.StatusInternalServerError, "error.html", nil)
-		return;
+		return
 	}
 
 	c.HTML(http.StatusOK, "user_index.html", gin.H{"users": users}) //! datanya berupa key value (map)
 }
 
-func(h *userHandler) FormCreateUser(c *gin.Context) {
+func (h *userHandler) FormCreateUser(c *gin.Context) {
 	c.HTML(http.StatusOK, "user_new.html", nil)
 }
 
-func(h *userHandler) CreateUser(c *gin.Context) {
+func (h *userHandler) CreateUser(c *gin.Context) {
 	var input user.FormCreateUserInput
 
 	err := c.ShouldBind(&input)
 	if err != nil {
 		input.Error = err
 		c.HTML(http.StatusInternalServerError, "user_new.html", input) //! menampilkan lagi data yang di input user jika error
-		return;
+		return
 	}
 
 	registerInput := user.RegisterUserInput{}
@@ -52,13 +51,13 @@ func(h *userHandler) CreateUser(c *gin.Context) {
 	_, err = h.userService.RegisterUser(registerInput)
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.html", nil)
-		return;
+		return
 	}
 
 	c.Redirect(http.StatusFound, "/users")
 }
 
-func(h *userHandler) FormUpdateUser(c *gin.Context) {
+func (h *userHandler) FormUpdateUser(c *gin.Context) {
 	idParam := c.Param("id")
 	id, _ := strconv.Atoi(idParam)
 
@@ -77,7 +76,7 @@ func(h *userHandler) FormUpdateUser(c *gin.Context) {
 	c.HTML(http.StatusOK, "user_edit.html", input)
 }
 
-func(h *userHandler) UpdateUser(c *gin.Context) {
+func (h *userHandler) UpdateUser(c *gin.Context) {
 	idParam := c.Param("id")
 	id, _ := strconv.Atoi(idParam)
 
@@ -87,7 +86,7 @@ func(h *userHandler) UpdateUser(c *gin.Context) {
 	if err != nil {
 		input.Error = err
 		c.HTML(http.StatusOK, "user_edit.html", input) //! menampilkan lagi data yang di input user jika error
-		return;
+		return
 	}
 
 	input.ID = id
@@ -99,14 +98,14 @@ func(h *userHandler) UpdateUser(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/users")
 }
 
-func(h *userHandler) FormUplaodAvater(c *gin.Context) {
+func (h *userHandler) FormUplaodAvater(c *gin.Context) {
 	idParam := c.Param("id")
 	id, _ := strconv.Atoi(idParam)
 
 	c.HTML(http.StatusOK, "user_avatar.html", gin.H{"ID": id})
 }
 
-func(h *userHandler) UploadAvatar(c *gin.Context) {
+func (h *userHandler) UploadAvatar(c *gin.Context) {
 	idParam := c.Param("id")
 	id, _ := strconv.Atoi(idParam)
 
@@ -131,5 +130,5 @@ func(h *userHandler) UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusFound,"/users")
+	c.Redirect(http.StatusFound, "/users")
 }

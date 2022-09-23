@@ -1,15 +1,14 @@
 package handler
 
 import (
-	"bwastartup/auth"
-	"bwastartup/helper"
-	"bwastartup/user"
 	"fmt"
+	"golang-api-crowdfunding/auth"
+	"golang-api-crowdfunding/helper"
+	"golang-api-crowdfunding/user"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
-
 
 type userHandler struct {
 	userService user.Service
@@ -20,22 +19,22 @@ func NewUserHandler(userService user.Service, authService auth.Service) *userHan
 	return &userHandler{userService, authService} //! passing userService
 }
 
-func(h *userHandler) RegisterUser(c *gin.Context) {
+func (h *userHandler) RegisterUser(c *gin.Context) {
 	/*
-		tangkap input dari user
-	 	map input dari user ke struct RegisterUserInput
-	 	struct di atas passing sebagai parameter service
+			tangkap input dari user
+		 	map input dari user ke struct RegisterUserInput
+		 	struct di atas passing sebagai parameter service
 	*/
 
 	var input user.RegisterUserInput
-	
+
 	err := c.ShouldBindJSON(&input) //! validasi di lakukan di sini
 
 	if err != nil {
 		errors := helper.FormatValidationError(err)
 
 		errorMessage := gin.H{"errors": errors}
-		response := helper.ApiResponse("Register account failed", http.StatusUnprocessableEntity, "error", errorMessage) //! entity tidak bisa di proses 
+		response := helper.ApiResponse("Register account failed", http.StatusUnprocessableEntity, "error", errorMessage) //! entity tidak bisa di proses
 
 		c.JSON(http.StatusBadRequest, response)
 		return
@@ -62,8 +61,7 @@ func(h *userHandler) RegisterUser(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-
-func(h *userHandler) Login(c *gin.Context) {
+func (h *userHandler) Login(c *gin.Context) {
 	/*
 		user memasukkan input
 		input di tangkap handler
@@ -80,7 +78,7 @@ func(h *userHandler) Login(c *gin.Context) {
 		errors := helper.FormatValidationError(err)
 		errorMessage := gin.H{"errors": errors}
 
-		response := helper.ApiResponse("Login account failed", http.StatusUnprocessableEntity, "error", errorMessage) //! entity tidak bisa di proses 
+		response := helper.ApiResponse("Login account failed", http.StatusUnprocessableEntity, "error", errorMessage) //! entity tidak bisa di proses
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -106,8 +104,7 @@ func(h *userHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-
-func(h *userHandler) CheckEmailHasBeenRegister(c *gin.Context) {
+func (h *userHandler) CheckEmailHasBeenRegister(c *gin.Context) {
 	/*
 		ada input email dari user
 		input email di mapping ke struct input
@@ -123,7 +120,7 @@ func(h *userHandler) CheckEmailHasBeenRegister(c *gin.Context) {
 		errors := helper.FormatValidationError(err)
 		errorMessage := gin.H{"errors": errors}
 
-		response := helper.ApiResponse("Check email failed", http.StatusUnprocessableEntity, "error", errorMessage) //! entity tidak bisa di proses 
+		response := helper.ApiResponse("Check email failed", http.StatusUnprocessableEntity, "error", errorMessage) //! entity tidak bisa di proses
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -131,7 +128,7 @@ func(h *userHandler) CheckEmailHasBeenRegister(c *gin.Context) {
 	isEmailAvailable, err := h.userService.IsEmailAvailable(input)
 	if err != nil {
 		errorMessage := gin.H{"errors": "Server Error"}
-		response := helper.ApiResponse("Check email failed", http.StatusUnprocessableEntity, "error", errorMessage) //! entity tidak bisa di proses 
+		response := helper.ApiResponse("Check email failed", http.StatusUnprocessableEntity, "error", errorMessage) //! entity tidak bisa di proses
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -150,7 +147,7 @@ func(h *userHandler) CheckEmailHasBeenRegister(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func(h *userHandler) UploadAvatar(c *gin.Context) {
+func (h *userHandler) UploadAvatar(c *gin.Context) {
 	/*
 		inputan berupa http form jadi tidak perlu membuat struct
 		input dari user
@@ -193,7 +190,7 @@ func(h *userHandler) UploadAvatar(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func(h *userHandler) FetchUser(c *gin.Context) { //! mengambil data user yang sekarang sedang login
+func (h *userHandler) FetchUser(c *gin.Context) { //! mengambil data user yang sekarang sedang login
 	currentUser := c.MustGet("currentUser").(user.User)
 	formatter := user.FormatUser(currentUser, "")
 

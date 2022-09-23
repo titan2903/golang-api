@@ -1,10 +1,10 @@
 package config
 
 import (
-	"bwastartup/campaign"
-	"bwastartup/helper"
-	"bwastartup/transaction"
-	"bwastartup/user"
+	"golang-api-crowdfunding/campaign"
+	"golang-api-crowdfunding/helper"
+	"golang-api-crowdfunding/transaction"
+	"golang-api-crowdfunding/user"
 	"log"
 
 	"gorm.io/driver/postgres"

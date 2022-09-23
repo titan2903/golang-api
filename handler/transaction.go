@@ -1,14 +1,13 @@
 package handler
 
 import (
-	"bwastartup/helper"
-	"bwastartup/transaction"
-	"bwastartup/user"
+	"golang-api-crowdfunding/helper"
+	"golang-api-crowdfunding/transaction"
+	"golang-api-crowdfunding/user"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
-
 
 type transactionHandler struct {
 	service transaction.Service
@@ -26,15 +25,14 @@ func NewTransactionHandler(service transaction.Service) *transactionHandler {
 	repository mencari data transaction suatu campaign
 */
 
-
-func(h *transactionHandler) GetCampaignTransactions(c *gin.Context) {
+func (h *transactionHandler) GetCampaignTransactions(c *gin.Context) {
 	var input transaction.GetCampaignTransactionInput
 
 	err := c.ShouldBindUri(&input)
 	if err != nil {
 		response := helper.ApiResponse("Failed get campaign's transactions", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	currentUser := c.MustGet("currentUser").(user.User) //! melakukan auth user, hanya user yang memiliki item tsb bisa melakukabn update
@@ -44,24 +42,23 @@ func(h *transactionHandler) GetCampaignTransactions(c *gin.Context) {
 	if err != nil {
 		response := helper.ApiResponse("Failed get campaign's transactions", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	response := helper.ApiResponse("Success get campaign's transactions", http.StatusOK, "success", transaction.FormatCampaignTransactions(transactions))
 
-	c.JSON(http.StatusOK,response)
+	c.JSON(http.StatusOK, response)
 }
 
-
-func(h *transactionHandler) GetUserTransactions(c *gin.Context) {
-/*
-	GetUserTransaction
-	handler: 
-		- ambil nilai user dari jwt atau middleware
-	service
-	repository:
-		- ambil data transaction (preload data campaign)
-*/
+func (h *transactionHandler) GetUserTransactions(c *gin.Context) {
+	/*
+		GetUserTransaction
+		handler:
+			- ambil nilai user dari jwt atau middleware
+		service
+		repository:
+			- ambil data transaction (preload data campaign)
+	*/
 
 	currentUser := c.MustGet("currentUser").(user.User) //! get id ddari user yg login melalui jwt
 	userID := currentUser.ID
@@ -70,14 +67,14 @@ func(h *transactionHandler) GetUserTransactions(c *gin.Context) {
 	if err != nil {
 		response := helper.ApiResponse("Failed get users's transactions", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
-	response :=  helper.ApiResponse("Success get campaign's transactions", http.StatusOK, "success", transaction.FormatUserTransactions(transactions))
+	response := helper.ApiResponse("Success get campaign's transactions", http.StatusOK, "success", transaction.FormatUserTransactions(transactions))
 	c.JSON(http.StatusOK, response)
 }
 
-func(h *transactionHandler) CreateTransaction(c *gin.Context) {
+func (h *transactionHandler) CreateTransaction(c *gin.Context) {
 	/*
 		ada input dari user memasukkan jumlah uang yang di input
 		handler menangkap input dan kemudian di mapping ke input struct nya
@@ -93,7 +90,7 @@ func(h *transactionHandler) CreateTransaction(c *gin.Context) {
 		errorMessage := gin.H{"errors": errors}
 		response := helper.ApiResponse("Failed Create transaction", http.StatusBadRequest, "error", errorMessage)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	currentUser := c.MustGet("currentUser").(user.User)
@@ -103,7 +100,7 @@ func(h *transactionHandler) CreateTransaction(c *gin.Context) {
 	if err != nil {
 		response := helper.ApiResponse("Failed Create transaction", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	response := helper.ApiResponse("Success Create transaction", http.StatusOK, "success", transaction.FormatTransaction(newTransaction))
@@ -111,22 +108,21 @@ func(h *transactionHandler) CreateTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-
-func(h *transactionHandler) GetNotification(c *gin.Context) { //! yang mengakses endpoint ini bukan client, tetapi yang mengaksesnya yaitu midtrans
+func (h *transactionHandler) GetNotification(c *gin.Context) { //! yang mengakses endpoint ini bukan client, tetapi yang mengaksesnya yaitu midtrans
 	var input transaction.TransactionNotificationInput
 
 	err := c.ShouldBindJSON(&input)
 	if err != nil {
 		response := helper.ApiResponse("Failed to process notification", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	err = h.service.PaymentProcess(input)
 	if err != nil {
 		response := helper.ApiResponse("Failed to process notification", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	c.JSON(http.StatusOK, input)

@@ -1,7 +1,7 @@
 package campaign
 
 import (
-	"bwastartup/user"
+	"golang-api-crowdfunding/user"
 	"time"
 
 	"github.com/leekchan/accounting"

@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"bwastartup/campaign"
-	"bwastartup/helper"
-	"bwastartup/user"
 	"fmt"
+	"golang-api-crowdfunding/campaign"
+	"golang-api-crowdfunding/helper"
+	"golang-api-crowdfunding/user"
 	"net/http"
 	"strconv"
 
@@ -26,7 +26,7 @@ func NewCampaignHandler(service campaign.Service) *campaignHandler {
 	return &campaignHandler{service}
 }
 
-func(h *campaignHandler) GetCampaigns(c *gin.Context) {
+func (h *campaignHandler) GetCampaigns(c *gin.Context) {
 	userID, _ := strconv.Atoi(c.Query("user_id"))
 
 	campaigns, err := h.service.GetCampaigns(userID)
@@ -37,11 +37,11 @@ func(h *campaignHandler) GetCampaigns(c *gin.Context) {
 	}
 
 	response := helper.ApiResponse("List of campaigns", http.StatusOK, "success", campaign.FormatCampaigns(campaigns))
-	
+
 	c.JSON(http.StatusOK, response)
 }
 
-func(h *campaignHandler) GetCampaign(c *gin.Context) {
+func (h *campaignHandler) GetCampaign(c *gin.Context) {
 	/*
 		memasukkan request user berupa parameter id nya
 		handler: mapping id yg di url ke struct input => service, memanggil formatter untuk melakukan formatting
@@ -55,21 +55,21 @@ func(h *campaignHandler) GetCampaign(c *gin.Context) {
 	if err != nil {
 		response := helper.ApiResponse("Failed to get detail campaign", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	campaignDetail, err := h.service.GetCampaignByID(input)
 	if err != nil {
 		response := helper.ApiResponse("Failed to get detail campaign", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
-	} 
+		return
+	}
 
 	response := helper.ApiResponse("Success get Campaign detail", http.StatusOK, "success", campaign.FormatCampaignDetail(campaignDetail))
 	c.JSON(http.StatusOK, response)
 }
 
-func(h *campaignHandler) CreateCampaign(c *gin.Context) {
+func (h *campaignHandler) CreateCampaign(c *gin.Context) {
 	/*
 		tangkap parameter dari user ke input struct
 		ambil current user dari jwt/handler
@@ -84,7 +84,7 @@ func(h *campaignHandler) CreateCampaign(c *gin.Context) {
 		errors := helper.FormatValidationError(err)
 		response := helper.ApiResponse("Failed Create Campaign", http.StatusBadRequest, "error", errors)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	currentUser := c.MustGet("currentUser").(user.User)
@@ -94,7 +94,7 @@ func(h *campaignHandler) CreateCampaign(c *gin.Context) {
 	if err != nil {
 		response := helper.ApiResponse("Failed Create Campaign", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	response := helper.ApiResponse("Success Create Campaign", http.StatusOK, "success", campaign.FormatCampaign(newCampaign))
@@ -102,7 +102,7 @@ func(h *campaignHandler) CreateCampaign(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func(h *campaignHandler) UpdateCampaign(c *gin.Context) {
+func (h *campaignHandler) UpdateCampaign(c *gin.Context) {
 	/*
 		User memasukkan input
 		handler menangkap inputan dari user
@@ -117,7 +117,7 @@ func(h *campaignHandler) UpdateCampaign(c *gin.Context) {
 	if err != nil {
 		response := helper.ApiResponse("Failed to update campaign", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	var inputData campaign.CreateCampaignInput
@@ -126,7 +126,7 @@ func(h *campaignHandler) UpdateCampaign(c *gin.Context) {
 		errors := helper.FormatValidationError(err)
 		response := helper.ApiResponse("Failed Update Campaign", http.StatusBadRequest, "error", errors)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	currentUser := c.MustGet("currentUser").(user.User) //! melakukan auth user, hanya user yang memiliki item tsb bisa melakukabn update
@@ -136,7 +136,7 @@ func(h *campaignHandler) UpdateCampaign(c *gin.Context) {
 	if err != nil {
 		response := helper.ApiResponse("Failed Update Campaign", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	response := helper.ApiResponse("Success Update Campaign", http.StatusOK, "success", campaign.FormatCampaign(updatedCampaign))
@@ -144,9 +144,9 @@ func(h *campaignHandler) UpdateCampaign(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func(h *campaignHandler) UploadCampaignImage(c *gin.Context) {
+func (h *campaignHandler) UploadCampaignImage(c *gin.Context) {
 	/*
-		! handler: 
+		! handler:
 		TODO	- menangkap input dan ubah ke struct input
 		TODO	- save image campaign ke suatu folder
 		! service (kondisi memanggil is_primary, manggil repo point 1)
@@ -162,7 +162,7 @@ func(h *campaignHandler) UploadCampaignImage(c *gin.Context) {
 		errors := helper.FormatValidationError(err)
 		response := helper.ApiResponse("Failed upload image Campaign", http.StatusBadRequest, "error", errors)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	currentUser := c.MustGet("currentUser").(user.User) //! melakukan auth user, hanya user yang memiliki item tsb bisa melakukabn upload
@@ -173,7 +173,7 @@ func(h *campaignHandler) UploadCampaignImage(c *gin.Context) {
 		data := gin.H{"is_uploaded": false}
 		response := helper.ApiResponse("Failed to upload campaign Image", http.StatusBadRequest, "error", data)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	userID := currentUser.ID
@@ -185,7 +185,7 @@ func(h *campaignHandler) UploadCampaignImage(c *gin.Context) {
 		data := gin.H{"is_uploaded": false}
 		response := helper.ApiResponse("failed to upload campaign image", http.StatusBadRequest, "error", data)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	_, err = h.service.UploadCampaignImage(input, path)
@@ -193,7 +193,7 @@ func(h *campaignHandler) UploadCampaignImage(c *gin.Context) {
 		data := gin.H{"is_uploaded": false}
 		response := helper.ApiResponse("failed to upload campaign image", http.StatusBadRequest, "error", data)
 		c.JSON(http.StatusBadRequest, response)
-		return;
+		return
 	}
 
 	data := gin.H{"is_uploaded": true}

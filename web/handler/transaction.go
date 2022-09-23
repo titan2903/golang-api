@@ -1,12 +1,11 @@
 package handler
 
 import (
-	"bwastartup/transaction"
+	"golang-api-crowdfunding/transaction"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
-
 
 type transactionHandler struct {
 	transactionService transaction.Service
@@ -16,7 +15,7 @@ func NewTransactionHandler(transactionService transaction.Service) *transactionH
 	return &transactionHandler{transactionService}
 }
 
-func(h *transactionHandler) Index(c *gin.Context) {
+func (h *transactionHandler) Index(c *gin.Context) {
 	transactions, err := h.transactionService.GetAllTransaction()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.html", nil)

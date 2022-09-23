@@ -1,17 +1,16 @@
 package transaction
 
 import (
-	"bwastartup/campaign"
-	"bwastartup/payment"
 	"errors"
+	"golang-api-crowdfunding/campaign"
+	"golang-api-crowdfunding/payment"
 	"strconv"
 )
-
 
 type service struct {
 	repository         Repository
 	campaignRepository campaign.Repository
-	paymentService	payment.Service
+	paymentService     payment.Service
 }
 
 type Service interface {
@@ -50,16 +49,16 @@ func (s *service) GetTransactionByCampaignID(input GetCampaignTransactionInput) 
 	return transaction, nil
 }
 
-func(s *service) GetTransactionByUserID(userID int) ([]Transaction, error) {
+func (s *service) GetTransactionByUserID(userID int) ([]Transaction, error) {
 	transaction, err := s.repository.GetByUserID(userID)
-	if err != nil  {
+	if err != nil {
 		return transaction, err
 	}
 
 	return transaction, nil
 }
 
-func(s *service) CreateTransaction(input CreateTransactionInput) (Transaction, error){
+func (s *service) CreateTransaction(input CreateTransactionInput) (Transaction, error) {
 	transaction := Transaction{}
 	transaction.CampaignID = input.CampaignID
 	transaction.Amount = input.Amount
@@ -68,31 +67,31 @@ func(s *service) CreateTransaction(input CreateTransactionInput) (Transaction, e
 	transaction.Code = "" //!unique
 
 	newTransaction, err := s.repository.Save(transaction)
-	if err != nil  {
+	if err != nil {
 		return newTransaction, err
 	}
 
-	paymentTransaction := payment.Transaction {
-		ID: newTransaction.ID,
+	paymentTransaction := payment.Transaction{
+		ID:     newTransaction.ID,
 		Amount: newTransaction.Amount,
 	}
 
 	paymentURL, err := s.paymentService.GetPaymentURL(paymentTransaction, input.User)
-	if err != nil  {
+	if err != nil {
 		return newTransaction, err
 	}
 
 	newTransaction.PaymentURL = paymentURL
 
 	newTransaction, err = s.repository.Update(newTransaction)
-	if err != nil  {
+	if err != nil {
 		return newTransaction, err
 	}
 
 	return newTransaction, nil
 }
 
-func(s *service) PaymentProcess(input TransactionNotificationInput) (error) {
+func (s *service) PaymentProcess(input TransactionNotificationInput) error {
 	transaction_id, _ := strconv.Atoi(input.OrderID) //! mengambil data transaction dengan id yang bersangkutan
 
 	transaction, err := s.repository.GetByID(transaction_id)
@@ -100,7 +99,7 @@ func(s *service) PaymentProcess(input TransactionNotificationInput) (error) {
 		return err
 	}
 
-	if (input.PaymentType == "credit_card" && input.TransactionStatus == "capture" && input.FraudStatus == "accept") {
+	if input.PaymentType == "credit_card" && input.TransactionStatus == "capture" && input.FraudStatus == "accept" {
 		transaction.Status = "paid"
 	} else if input.TransactionStatus == "settlement" {
 		transaction.Status = "paid"
@@ -131,7 +130,7 @@ func(s *service) PaymentProcess(input TransactionNotificationInput) (error) {
 	return nil
 }
 
-func(s *service) GetAllTransaction() ([]Transaction, error) {
+func (s *service) GetAllTransaction() ([]Transaction, error) {
 	transactions, err := s.repository.FindAll()
 	if err != nil {
 		return transactions, err

@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"bwastartup/helper"
 	"errors"
+	"golang-api-crowdfunding/helper"
 
 	"github.com/dgrijalva/jwt-go"
 )

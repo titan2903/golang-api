@@ -1,8 +1,8 @@
 package transaction
 
 import (
-	"bwastartup/campaign"
-	"bwastartup/user"
+	"golang-api-crowdfunding/campaign"
+	"golang-api-crowdfunding/user"
 	"time"
 
 	"github.com/leekchan/accounting"
