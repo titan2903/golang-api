@@ -1,0 +1,482 @@
+{
+	"info": {
+		"_postman_id": "ac3f3559-d133-44b8-ae2c-6b6163b49638",
+		"name": "golang-crowdfunding",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12510739"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "REGISTER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"testuser123\",\r\n    \"email\": \"testuser123@mail.com\",\r\n    \"password\": \"password\",\r\n    \"occupation\": \"devops\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}api/v1/users",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"testuser1@mail.com\",\r\n    \"password\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}api/v1/login",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CHECK EMAIL",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"testwer@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}api/v1/email_checkers",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"email_checkers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPLOAD IMAGE AVATAR",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/C:/Users/Asus/Pictures/Saved Pictures/intpa1.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}api/v1/avatars",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"avatars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FETCH USER",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/v1/users/fetch",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"users",
+								"fetch"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "campaigns",
+			"item": [
+				{
+					"name": "GET CAMPAIGNS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/v1/campaigns",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"campaigns"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET CAMPAIGN BY ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/v1/campaigns/1",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"campaigns",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE CAMPAIGN",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"campaign keren\",\r\n    \"short_description\": \"test create campaign\",\r\n    \"description\": \"test create desc\",\r\n    \"goal_amount\": 10000000,\r\n    \"perks\": \"keuntungan satu, keuntungan dua, keuntungan tiga\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}api/v1/campaigns",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"campaigns"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE CAMPAIGN",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"campaign UPDATED lagi tes\",\r\n    \"short_description\": \"test update campaign\",\r\n    \"description\": \"test update desc\",\r\n    \"goal_amount\": 15000000,\r\n    \"perks\": \"keuntungan satu, keuntungan dua, keuntungan tiga\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}api/v1/campaigns/5",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"campaigns",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPLOAD IMAGE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "campaign_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "is_primary",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Asus/Pictures/evomo.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}api/v1/campaign-image",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"campaign-image"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "avatar",
+			"item": [
+				{
+					"name": "GET AVATAR USER",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}images/13-intpa1.jpg",
+							"host": [
+								"{{base_url}}images"
+							],
+							"path": [
+								"13-intpa1.jpg"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "transactions",
+			"item": [
+				{
+					"name": "GET CAMPAIGNS TRANSACTIONS",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/v1/campaigns/1/transactions",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"campaigns",
+								"1",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET USER TRANSACTIONS",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/v1/transactions",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE TRANSACTION",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"campaign_id\": 4,\r\n    \"amount\": 50093\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}api/v1/transactions",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"v1",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxM30.8htFyZ7Y3YKrlM5yrxvx2ObeBSdgiSPh93pmhaR8eX0",
+			"type": "string"
+		},
+		{
+			"key": "base_url",
+			"value": "localhost:8080/",
+			"type": "string"
+		}
+	]
+}
