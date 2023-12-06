@@ -59,7 +59,7 @@ func main() {
 	//! Set Port
 	port := helper.GoDotEnvVariable("PORT")
 	if port == "" {
-		port = "8000"
+		port = "8700"
 	}
 	sPort := fmt.Sprintf(":%s", port)
 
