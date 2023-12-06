@@ -7,7 +7,7 @@ import (
 	"golang-api-crowdfunding/user"
 	"log"
 
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -17,7 +17,7 @@ func ConnectDB() *gorm.DB {
 	// 	helper.GoDotEnvVariable("DB_HOST"), helper.GoDotEnvVariable("DB_USER"), helper.GoDotEnvVariable("DB_PASSWORD"), helper.GoDotEnvVariable("DB_NAME"), helper.GoDotEnvVariable("DB_PORT"),
 	// )
 	dsnMaster := helper.GoDotEnvVariable("DATABASE_URL")
-	db, err := gorm.Open(postgres.Open(dsnMaster), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsnMaster), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err.Error())

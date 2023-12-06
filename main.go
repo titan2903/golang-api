@@ -6,6 +6,7 @@ import (
 	"golang-api-crowdfunding/campaign"
 	"golang-api-crowdfunding/config"
 	"golang-api-crowdfunding/handler"
+	"golang-api-crowdfunding/healthcheck"
 	"golang-api-crowdfunding/helper"
 	"golang-api-crowdfunding/libraryloadtemplate"
 	"golang-api-crowdfunding/middleware"
@@ -23,6 +24,11 @@ import (
 func main() {
 
 	db := config.ConnectDB()
+
+	//! Healthcheck
+	healthcheckService := healthcheck.NewService()
+	healthcheckHandler := handler.NewHealthcheckHandler(healthcheckService)
+
 	//! Auth
 	authService := auth.NewService()
 
@@ -74,6 +80,9 @@ func main() {
 	router.Static("/css", "./web/assets/css")
 	router.Static("/js", "./web/assets/js")
 	router.Static("/webfonts", "./web/assets/webfonts")
+
+	//! Router Health check
+	api.GET("/health", healthcheckHandler.HealthcheckHandler)
 
 	//! Router Users
 	api.POST("/users", userHandler.RegisterUser)
